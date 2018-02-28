@@ -4,7 +4,7 @@ This repository includes scripts for deploying Conjur v4 to an OpenShift cluster
 
 # Requirements
 
-- Make sure you have the most recent version of Vagrant](https://www.vagrantup.com/downloads.html) installed
+- Make sure you have the most recent version of [Vagrant](https://www.vagrantup.com/downloads.html) installed
 - Obtain the latest `conjur-appliance:4.9-stable` Docker image and tag it as `conjur-appliance:4.9-stable`
 
 # Deploying Conjur Cluster on OpenShift 3.3 (Origin 1.3)
