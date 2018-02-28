@@ -1,5 +1,11 @@
 # openshift-conjur-deploy
-Scripts for deploying Conjur to OpenShift
+
+This repository includes scripts for deploying Conjur v4 to an OpenShift cluster running in a local vagrant box.
+
+# Requirements
+
+- Make sure you have the most recent version of Vagrant](https://www.vagrantup.com/downloads.html) installed
+- Obtain the latest `conjur-appliance:4.9-stable` Docker image and tag it as `conjur-appliance:4.9-stable`
 
 # Deploying Conjur Cluster on OpenShift 3.3 (Origin 1.3)
 
@@ -14,7 +20,8 @@ Run the follow to set up the environment.
 
 ```
 vagrant up --provision
-vagrant ssh # then change directory to ./scripts
+vagrant ssh
+cd ./scripts
 ```
 
 ***If not using Vagrant please modify utils with relevant credentials for login into OpenShift***
@@ -124,14 +131,14 @@ This section demonstrates an example app consuming the the Conjur cluster runnin
 
 ### 2.1 Configure and login the local command-line interface.
 
-Please consult `./0_webapp_init.sh`
+Please consult `./webapp_demo/0_webapp_init.sh`
 
 + Initilize host Conjur CLI for Conjur cluster on OpenShift
 + Build app. Consult `./webapp_demo/build/build.sh`
 
 ### 2.2 Load policies and set secret values
 
-Please consult `./1_load_policies.sh` and `webapp_demo/policy`
+Please consult `./webapp_demo/1_load_policies.sh` and `webapp_demo/policy`
 
 + Load the users policies, which would be managed by the Ops team.
 + Load the OpenShift app policies, which are performed by the OpenShift admin.
@@ -140,7 +147,7 @@ Please consult `./1_load_policies.sh` and `webapp_demo/policy`
 
 ### 2.3 Deploy webapp
 
-Please consult `./2_deploy.sh`
+Please consult `./webapp_demo/2_deploy.sh`
 
 + Grab the Conjur SSL cert by running the following on the Conjur master pod `cat /opt/conjur/etc/ssl/conjur.pem`. Store this in a ConfigMap.
 + Rotate the webapp host API key `conjur host rotate_api_key -h $host_id` and store it in a Secret.
