@@ -5,24 +5,24 @@ set -eo pipefail
 
 main() {
   build_appliance_image
-	build_haproxy_image
+  build_haproxy_image
 
-	install_weavescope
+  install_weavescope
 }
 
 build_appliance_image() {
   # Assumptions:
   # - conjur-appliance:4.9-stable exists in the Docker engine.
 
-	pushd ${EXERCISE_ROOT}/build/conjur_server
-	  ./build.sh
-	popd
+  pushd ${EXERCISE_ROOT}/build/conjur_server
+    ./build.sh
+  popd
 }
 
 build_haproxy_image() {
-	pushd ${EXERCISE_ROOT}/build/haproxy
-	  ./build.sh
-	popd
+  pushd ${EXERCISE_ROOT}/build/haproxy
+    ./build.sh
+  popd
 }
 
 install_weavescope() {
