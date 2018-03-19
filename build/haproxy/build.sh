@@ -1,4 +1,4 @@
 #!/bin/bash
 set -eo pipefail
 
-docker build -t haproxy:conjur .
+docker build -t haproxy:local .

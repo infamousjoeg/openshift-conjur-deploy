@@ -1,25 +1,6 @@
-#!/bin/bash 
+#!/bin/bash
 
-declare SERVER_URL="https://10.2.2.2:8443"
-
-# log in
-oc login $SERVER_URL -u admin -p admin
-
-declare EXERCISE_ROOT="/home/vagrant/scripts"
-
-declare CONJUR_CONTEXT=conjur # project for Conjur
-declare APP_CONTEXT=webapp # project for example app
-
-declare CONJUR_CLUSTER_ACCOUNT=dev
-declare CONJUR_MASTER_DNS_NAME=conjur-master.$CONJUR_CONTEXT.svc.cluster.local
-declare CONJUR_ADMIN_PASSWORD=Cyberark1
-
-# for the host conjur cli
-declare CONJUR_CERT_PATH="$EXERCISE_ROOT/conjur-${CONJUR_CLUSTER_ACCOUNT}.pem"
-declare CONJURRC="$EXERCISE_ROOT/conjurrc"
-export CONJURRC
-
-declare MANIFEST_DIR=conjur-service
+. config.sh
 
 announce() {
   echo "++++++++++++++++++++++++++++++++++++++"
@@ -29,12 +10,48 @@ announce() {
   echo "++++++++++++++++++++++++++++++++++++++"
 }
 
+check_login() {
+  if ! logged_in; then
+    echo "You must login to OpenShift before running this script."
+    exit
+  fi
+}
+
+check_docker_registry_path() {
+  if [ "$DOCKER_REGISTRY_PATH" = "" ]; then
+    echo "You must set DOCKER_REGISTRY_PATH before running this script."
+    exit
+  fi
+}
+
+logged_in() {
+  if oc whoami 2 > /dev/null; then
+    true
+  else
+    false
+  fi
+}
+
+has_project() {
+  if oc projects | awk 'n>=1 { print a[n%1] } { a[n%1]=$0; n=n+1 }' | grep -w "$1" > /dev/null ; then
+    true
+  else
+    false
+  fi
+}
+
+docker_tag_and_push() {
+  docker_tag="${DOCKER_REGISTRY_PATH}/${1}/$2:$CONJUR_DEPLOY_TAG"
+  docker tag $2:local $docker_tag
+  docker push $docker_tag
+}
+
 copy_file_to_container() {
   local from=$1
   local to=$2
   local pod_name=$3
 
-  local source_file_path="$(readlink -f "$from")"
+  local source_file_path=$from
   local source_file_name="$(basename "$source_file_path")"
   local parent_path="$(dirname "$source_file_path")"
   local parent_name="$(basename "$parent_path")"
@@ -54,10 +71,16 @@ conjur policy load --as-group security_admin "policy/$POLICY_FILE"
 CMD
 }
 
-mastercmd() {
-  local current_context=$(oc projects | grep \* | awk '{ print $2 }')
+# select first pod in list to be master
+get_master_pod_name() {
+  pod_list=$(oc get pods -l app=conjur-node --no-headers | awk '{ print $1 }')
+  echo $pod_list | awk '{print $1}'
+}
 
-  set_context $CONJUR_CONTEXT
+mastercmd() {
+  local current_project=$(oc projects | grep \* | awk '{ print $2 }')
+
+  set_project $CONJUR_PROJECT
 
   local master_pod=$(oc get pod -l role=master --no-headers | awk '{ print $1 }')
   local interactive=$1
@@ -69,7 +92,7 @@ mastercmd() {
     oc exec $master_pod -- $@
   fi
 
-  set_context "$current_context"
+  set_project "$current_project"
 }
 
 rotate_host_api_key() {
@@ -102,7 +125,7 @@ run_conjur_cmd_as_admin() {
   echo "$output"
 }
 
-set_context() {
+set_project() {
   # general utility for switching projects/namespaces/contexts in openshift
   # expects exactly 1 argument, a project name.
   if [[ $# != 1 ]]; then
@@ -114,8 +137,7 @@ set_context() {
 }
 
 wait_for_node() {
-  local podname=$1
-  wait_for_it 20 '[ $(oc exec "'"$1"'" evoke role) = "blank" ]'
+  wait_for_it -1 "kubectl describe pod $1 | grep Status: | grep -q Running"
 }
 
 function wait_for_it() {
@@ -144,3 +166,11 @@ function wait_for_it() {
     echo 'Success!'
   fi
 }
+
+announce_openshift_version() {
+  MAJOR_VERSION=$(oc version | grep openshift | awk '{print $2}' | awk -F "." '{ print $1}')
+  MINOR_VERSION=$(oc version | grep openshift | awk -F "." '{ print $2}')
+  printf "Running Openshift %s.%s\n" $MAJOR_VERSION $MINOR_VERSION
+}
+
+check_login

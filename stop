@@ -1,0 +1,26 @@
+#!/bin/bash 
+set -o pipefail
+
+. utils.sh
+
+oc project default
+
+if has_project $CONJUR_PROJECT; then
+  oc delete project $CONJUR_PROJECT
+
+  printf "Waiting for $CONJUR_PROJECT project deletion to complete"
+
+  while : ; do
+    printf "..."
+    
+    if has_project "$CONJUR_PROJECT"; then
+      sleep 5
+    else
+      break
+    fi
+  done
+
+  echo ""
+fi
+
+echo "Conjur environment purged."

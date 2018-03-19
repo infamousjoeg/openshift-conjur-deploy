@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: webapp
-        image: webapp:local
+        image: {{ DOCKER_IMAGE }}
         command: [ ./webapp.rb ]
         env:
         - name: CONJUR_APPLIANCE_URL

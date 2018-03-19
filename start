@@ -1,0 +1,11 @@
+#!/bin/bash -e
+
+./stop
+
+./0_create_openshift_project.sh
+./1_build_and_push_containers.sh
+./2_start_conjur_cluster.sh
+./3_configure_master.sh
+./4_configure_standbys.sh
+./5_create_load_balancer.sh
+./6_print_config.sh
