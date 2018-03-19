@@ -17,6 +17,7 @@ oc secrets add serviceaccount/default secrets/dockerpullsecret --for=pull
 docker_image=$DOCKER_REGISTRY_PATH/$CONJUR_PROJECT/conjur-appliance:$CONJUR_DEPLOY_TAG
 
 sed -e "s#{{ DOCKER_IMAGE }}#$docker_image#g" ./manifests/conjur-cluster.yaml | oc create -f -
+sed -e "s#{{ DOCKER_IMAGE }}#$docker_image#g" ./manifests/conjur-follower.yaml | oc create -f -
 
 sleep 10
 
