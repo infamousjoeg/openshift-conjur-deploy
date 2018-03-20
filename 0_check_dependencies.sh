@@ -16,5 +16,5 @@ fi
 # Confirms Conjur image is present.
 if [[ "$(docker images -q $CONJUR_DOCKER_IMAGE 2> /dev/null)" == "" ]]; then
   echo "You must have the Conjur v4 Appliance tagged as $CONJUR_DOCKER_IMAGE in your Docker engine to run this script."
-  exit
+  exit 1
 fi
