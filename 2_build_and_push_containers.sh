@@ -1,10 +1,8 @@
-#!/bin/bash 
+#!/bin/bash
 set -eou pipefail
 
 . config.sh
 . utils.sh
-
-check_docker_registry_path
 
 if [[ "$(docker images -q $CONJUR_DOCKER_IMAGE 2> /dev/null)" == "" ]]; then
   echo "Must have image tagged $CONJUR_DOCKER_IMAGE available in Docker engine to run this script."

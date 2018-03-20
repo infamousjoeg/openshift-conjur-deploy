@@ -4,8 +4,6 @@ set -eou pipefail
 . config.sh
 . utils.sh
 
-check_docker_registry_path
-
 set_project $CONJUR_PROJECT
 
 docker_image=$DOCKER_REGISTRY_PATH/$CONJUR_PROJECT/haproxy:$CONJUR_DEPLOY_TAG

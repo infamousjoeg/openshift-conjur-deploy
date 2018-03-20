@@ -4,8 +4,6 @@ set -eou pipefail
 . config.sh
 . utils.sh
 
-check_docker_registry_path
-
 set_project $CONJUR_PROJECT
 
 # Set credentials for OpenShift Docker registry

@@ -16,5 +16,5 @@ Inside the cluster:
   conjur-master.$CONJUR_PROJECT.svc.cluster.local
 
 Outside the cluster:
-  $environment_url:$master_external_port
+  $environment_url:$external_port
 "

@@ -10,31 +10,7 @@ announce() {
   echo "++++++++++++++++++++++++++++++++++++++"
 }
 
-check_login() {
-  if ! logged_in; then
-    echo "You must login to OpenShift before running this script."
-    exit
-  fi
-}
-
-check_docker_registry_path() {
-  if [ "$DOCKER_REGISTRY_PATH" = "" ]; then
-    echo "You must set DOCKER_REGISTRY_PATH before running this script."
-    exit
-  fi
-}
-
-logged_in() {
-  if oc whoami 2 > /dev/null; then
-    true
-  else
-    false
-  fi
-}
-
 has_project() {
-  oc project default
-  
   if oc projects | awk 'n>=1 { print a[n%1] } { a[n%1]=$0; n=n+1 }' | sed 's/^ *//g' | grep -x "$1" > /dev/null ; then
     true
   else
@@ -174,5 +150,3 @@ announce_openshift_version() {
   MINOR_VERSION=$(oc version | grep openshift | awk -F "." '{ print $2}')
   printf "Running Openshift %s.%s\n" $MAJOR_VERSION $MINOR_VERSION
 }
-
-check_login
