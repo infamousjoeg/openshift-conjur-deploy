@@ -14,5 +14,6 @@ oc secrets new-dockercfg dockerpullsecret \
 oc secrets add serviceaccount/default secrets/dockerpullsecret --for=pull
 
 docker_image=$DOCKER_REGISTRY_PATH/$APP_PROJECT/webapp:$CONJUR_DEPLOY_TAG
-
-sed -e "s#{{ DOCKER_IMAGE }}#$docker_image#g" ./webapp.yaml | oc create -f -
+sed -e "s#{{ DOCKER_IMAGE }}#$docker_image#g" ./webapp.yaml |
+  sed -e "s#{{ CONJUR_ACCOUNT }}#$CONJUR_ACCOUNT#g" |
+  oc create -f -
