@@ -1,6 +1,8 @@
 #!/bin/bash
 set -eou pipefail
 
+. config.sh
+
 # Confirm logged into OpenShift.
 if ! oc whoami 2 > /dev/null; then
   echo "You must login to OpenShift before running this demo."
