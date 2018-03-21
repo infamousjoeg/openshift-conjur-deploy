@@ -22,7 +22,7 @@ spec:
         - name: CONJUR_APPLIANCE_URL
           value: https://conjur-follower.conjur.svc.cluster.local/api
         - name: CONJUR_ACCOUNT
-          value: dev
+          value: {{ CONJUR_ACCOUNT }}
         - name: CONJUR_SSL_CERTIFICATE
           valueFrom:
             configMapKeyRef:

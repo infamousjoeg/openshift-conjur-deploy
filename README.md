@@ -16,6 +16,15 @@ Before running the deployment script, you'll need to make sure the [integrated D
 export DOCKER_REGISTRY_PATH=docker-registry-[namespace].apps.[openshift env domain]
 ```
 
+# Conjur Configuration
+
+You will also need to set environment variables for the account and admin password that you would like to use when configuring your Conjur installation:
+
+```
+export CONJUR_ACCOUNT=my_account_name
+export CONJUR_ADMIN_PASSWORD=my_admin_password
+```
+
 # Deploying Conjur
 
 Run the `./start` script in the root folder to deploy Conjur to your environment. This will create a Conjur OpenShift project and deploy 3 Conjur Appliance pods. By convention, the first pod is chosen as Master and the other two are designated as Standbys. An HAProxy pod will also be created to act as a load balancer for the Conjur containers and provide high availability.

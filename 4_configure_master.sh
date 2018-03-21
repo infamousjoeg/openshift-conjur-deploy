@@ -17,4 +17,4 @@ oc exec $master_pod_name -- evoke configure master \
    --master-altnames localhost,conjur-master.$CONJUR_PROJECT.svc.cluster.local \
    --follower-altnames conjur-follower,conjur-follower.$CONJUR_PROJECT.svc.cluster.local \
    -p $CONJUR_ADMIN_PASSWORD \
-   $CONJUR_CLUSTER_ACCOUNT
+   $CONJUR_ACCOUNT
