@@ -1,6 +1,8 @@
 #!/bin/bash
 
-. config.sh
+# Docker
+declare CONJUR_DEPLOY_TAG=conjur
+declare CONJUR_DOCKER_IMAGE=conjur-appliance:4.9-stable
 
 announce() {
   echo "++++++++++++++++++++++++++++++++++++++"
@@ -41,14 +43,6 @@ copy_file_to_container() {
   oc exec "$pod_name" rm -- -rf "$container_temp_path/$parent_name"
 }
 
-load_policy() {
-  local POLICY_FILE=$1
-
-  run_conjur_cmd_as_admin <<CMD
-conjur policy load --as-group security_admin "policy/$POLICY_FILE"
-CMD
-}
-
 # select first pod in list to be master
 get_master_pod_name() {
   pod_list=$(oc get pods -l app=conjur-node --no-headers | awk '{ print $1 }')
@@ -71,36 +65,6 @@ mastercmd() {
   fi
 
   set_project "$current_project"
-}
-
-rotate_host_api_key() {
-  local host=$1
-
-  run_conjur_cmd_as_admin <<CMD
-conjur host rotate_api_key -h $host
-CMD
-}
-
-run_conjur_cmd_as_admin() {
-   if [[ "$CONJURRC" = "" ]] ; then
-    echo "Set CONJURRC to point to your .conjurrc file."
-    echo "This is created by 'conjur init' in your home directory by default."
-    exit 1
-  fi
-
-  local command=$(cat $@)
-
-  if [[ -z "$command" ]] ; then
-    echo "Usage: %s <conjur-command>" $0
-    exit 1
-  fi
-  conjur authn logout > /dev/null
-  conjur authn login -u admin -p "$CONJUR_ADMIN_PASSWORD" > /dev/null
-
-  local output=$(eval "$command")
-
-  conjur authn logout > /dev/null
-  echo "$output"
 }
 
 set_project() {

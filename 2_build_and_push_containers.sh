@@ -1,7 +1,6 @@
 #!/bin/bash
 set -eou pipefail
 
-. config.sh
 . utils.sh
 
 docker login -u _ -p $(oc whoami -t) $DOCKER_REGISTRY_PATH

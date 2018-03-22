@@ -1,11 +1,17 @@
 #!/bin/bash
 set -eou pipefail
 
-. config.sh
+. utils.sh
 
 # Confirm logged into OpenShift.
 if ! oc whoami 2 > /dev/null; then
   echo "You must login to OpenShift before running this demo."
+  exit 1
+fi
+
+# Confirm Conjur OpenShift project name is configured.
+if [ "$CONJUR_PROJECT_NAME" = "" ]; then
+  echo "You must set CONJUR_PROJECT_NAME before running this script."
   exit 1
 fi
 

@@ -1,9 +1,10 @@
 #!/bin/bash
 set -eou pipefail
 
+./0_check_dependencies.sh
+
 ./stop
 
-./0_check_dependencies.sh
 ./1_create_openshift_project.sh
 ./2_build_and_push_containers.sh
 ./3_start_conjur_cluster.sh

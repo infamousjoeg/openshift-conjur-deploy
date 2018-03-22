@@ -1,7 +1,6 @@
 #!/bin/bash
 set -eou pipefail
 
-. config.sh
 . utils.sh
 
 if has_project "$CONJUR_PROJECT_NAME"; then
