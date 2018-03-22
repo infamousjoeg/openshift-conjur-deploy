@@ -8,17 +8,29 @@ This repository contains scripts for deploying a Conjur v4 cluster to an OpenShi
 - Install the [v1.3.3](https://github.com/openshift/origin/releases/tag/v1.3.3) of the OpenShift CLI.
 - Log in to your OpenShift environment via `oc login` with a user that has project creation privileges.
 
-# Docker Configuration
+# OpenShift Configuration
 
-Before running the deployment script, you'll need to make sure the [integrated Docker registry](https://docs.openshift.com/container-platform/3.3/install_config/registry/deploy_registry_existing_clusters.html) of your OpenShift environment is available. You will also need to add the OpenShift registry as an [insecure registry](https://docs.docker.com/registry/insecure/) in your local Docker engine and then login with `docker login`. Finally, set the `DOCKER_REGISTRY_PATH` environment variable to the path of your OpenShift docker repo:
+First you'll need to specify an environment variable for the OpenShift project in which you wish to run Conjur:
+
+```
+export CONJUR_PROJECT_NAME=conjur
+```
+
+You'll also need to make sure the [integrated Docker registry](https://docs.openshift.com/container-platform/3.3/install_config/registry/deploy_registry_existing_clusters.html) of your OpenShift environment is available and that it has beenadded as an [insecure registry](https://docs.docker.com/registry/insecure/) in your local Docker engine. Set the `DOCKER_REGISTRY_PATH` environment variable to the path of your OpenShift docker repo:
 
 ```
 export DOCKER_REGISTRY_PATH=docker-registry-[namespace].apps.[openshift env domain]
 ```
 
+Finally, login to the Docker registry with:
+
+```
+docker login $DOCKER_REGISTRY_PATH
+```
+
 # Conjur Configuration
 
-You will also need to set environment variables for the account and admin password that you would like to use when configuring your Conjur installation:
+You will need to set environment variables for the account and admin password that you would like to use when configuring your Conjur installation:
 
 ```
 export CONJUR_ACCOUNT=my_account_name

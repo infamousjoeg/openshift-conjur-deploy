@@ -58,7 +58,7 @@ get_master_pod_name() {
 mastercmd() {
   local current_project=$(oc projects | grep \* | awk '{ print $2 }')
 
-  set_project $CONJUR_PROJECT
+  set_project $CONJUR_PROJECT_NAME
 
   local master_pod=$(oc get pod -l role=master --no-headers | awk '{ print $1 }')
   local interactive=$1

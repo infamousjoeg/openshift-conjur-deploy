@@ -4,7 +4,7 @@ set -eou pipefail
 . config.sh
 . utils.sh
 
-set_project $CONJUR_PROJECT
+set_project $CONJUR_PROJECT_NAME
 
 # Set credentials for OpenShift Docker registry
 oc secrets new-dockercfg dockerpullsecret \
@@ -12,7 +12,7 @@ oc secrets new-dockercfg dockerpullsecret \
    --docker-password=$(oc whoami -t) --docker-email=_
 oc secrets add serviceaccount/default secrets/dockerpullsecret --for=pull
 
-docker_image=$DOCKER_REGISTRY_PATH/$CONJUR_PROJECT/conjur-appliance:$CONJUR_DEPLOY_TAG
+docker_image=$DOCKER_REGISTRY_PATH/$CONJUR_PROJECT_NAME/conjur-appliance:$CONJUR_DEPLOY_TAG
 
 sed -e "s#{{ DOCKER_IMAGE }}#$docker_image#g" ./manifests/conjur-cluster.yaml | oc create -f -
 sed -e "s#{{ DOCKER_IMAGE }}#$docker_image#g" ./manifests/conjur-follower.yaml | oc create -f -

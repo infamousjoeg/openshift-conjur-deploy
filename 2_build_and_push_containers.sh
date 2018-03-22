@@ -10,10 +10,10 @@ pushd build/conjur_server
   ./build.sh
 popd
 
-docker_tag_and_push $CONJUR_PROJECT "conjur-appliance"
+docker_tag_and_push $CONJUR_PROJECT_NAME "conjur-appliance"
 
 pushd build/haproxy
   ./build.sh
 popd    
 
-docker_tag_and_push $CONJUR_PROJECT "haproxy"
+docker_tag_and_push $CONJUR_PROJECT_NAME "haproxy"

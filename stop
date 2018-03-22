@@ -5,15 +5,15 @@ set -eou pipefail
 
 oc project default
 
-if has_project $CONJUR_PROJECT; then
-  oc delete project $CONJUR_PROJECT
+if has_project $CONJUR_PROJECT_NAME; then
+  oc delete project $CONJUR_PROJECT_NAME
 
-  printf "Waiting for $CONJUR_PROJECT project deletion to complete"
+  printf "Waiting for $CONJUR_PROJECT_NAME project deletion to complete"
 
   while : ; do
     printf "..."
     
-    if has_project "$CONJUR_PROJECT"; then
+    if has_project "$CONJUR_PROJECT_NAME"; then
       sleep 5
     else
       break

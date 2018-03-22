@@ -15,6 +15,18 @@ if [ "$DOCKER_REGISTRY_PATH" = "" ]; then
   exit 1
 fi
 
+# Confirm Conjur account is configured.
+if [ "$CONJUR_ACCOUNT" = "" ]; then
+  echo "You must set CONJUR_ACCOUNT before running this script."
+  exit 1
+fi
+
+# Confirm Conjur admin password is configured.
+if [ "$CONJUR_ADMIN_PASSWORD" = "" ]; then
+  echo "You must set CONJUR_ADMIN_PASSWORD before running this script."
+  exit 1
+fi
+
 # Confirms Conjur image is present.
 if [[ "$(docker images -q $CONJUR_DOCKER_IMAGE 2> /dev/null)" == "" ]]; then
   echo "You must have the Conjur v4 Appliance tagged as $CONJUR_DOCKER_IMAGE in your Docker engine to run this script."
