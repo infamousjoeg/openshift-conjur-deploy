@@ -25,7 +25,7 @@ export DOCKER_REGISTRY_PATH=docker-registry-[namespace].apps.[openshift env doma
 Finally, login to the Docker registry with:
 
 ```
-docker login $DOCKER_REGISTRY_PATH
+docker login -u _ -p $(oc whoami -t) $DOCKER_REGISTRY_PATH
 ```
 
 # Conjur Configuration
@@ -33,8 +33,14 @@ docker login $DOCKER_REGISTRY_PATH
 You will need to set environment variables for the account and admin password that you would like to use when configuring your Conjur installation:
 
 ```
-export CONJUR_ACCOUNT=my_account_name
-export CONJUR_ADMIN_PASSWORD=my_admin_password
+export CONJUR_ACCOUNT=<my_account_name>
+export CONJUR_ADMIN_PASSWORD=<my_admin_password>
+```
+
+You will also need to set the `AUTHENTICATOR_SERVICE_ID` environment variable for the authn-k8s webservice that you will define in Conjur policy.. This should be of the form `authn-k8s/<service_id>`. For example, to enable the Conjur policy `conjur/authn-k8s/gke/prod`, you would set this to `authn-k8s/gke/prod`.
+
+```
+export AUTHENTICATOR_SERVICE_ID=authn-k8s/<service_id>
 ```
 
 # Deploying Conjur
@@ -43,4 +49,4 @@ Run the `./start` script in the root folder to deploy Conjur to your environment
 
 # Test App
 
-If you would like to deploy the optional test app, simply `cd` into `webapp_demo` and run `./start.sh`. This will set up a separate OpenShift project with a client app that retrieves a secret from Conjur on a loop and writes it to the logs. Visit the OpenShift console and examine the logs of a test app pod to confirm that the test app is working properly. You can also run `./rotate_db_password.sh` to change the password.
+Visit the [openshift-conjur-demo repo](https://github.com/conjurdemos/openshift-conjur-demo) for a test app that will allow you to test Conjur running in an OpenShift environment.

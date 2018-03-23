@@ -31,6 +31,9 @@ spec:
       containers:
       - name: conjur-appliance
         image: {{ DOCKER_IMAGE }}
+        env:
+          - name: CONJUR_AUTHENTICATORS
+            value: {{ SERVICE_ID }}
         ports:
         - containerPort: 443
           name: https
