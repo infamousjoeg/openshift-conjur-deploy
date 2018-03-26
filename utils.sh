@@ -21,7 +21,7 @@ has_project() {
 }
 
 docker_tag_and_push() {
-  docker_tag="${DOCKER_REGISTRY_PATH}/${1}/$2:$CONJUR_DEPLOY_TAG"
+  docker_tag="${DOCKER_REGISTRY_PATH}/$1/$2:$CONJUR_DEPLOY_TAG"
   docker tag $2:local $docker_tag
   docker push $docker_tag
 }
