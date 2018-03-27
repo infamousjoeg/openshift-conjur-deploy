@@ -51,6 +51,8 @@ Run the `./start` script to deploy Conjur. This creates a project with a highly-
 
 Please note that these scripts currently overprivilege the `default` service account with the `anyuid` SCC to allow it to write files to disk. This privilege will become more restricted in future iterations of this project.
 
+When the deploy scripts finish, they will print out the URL and credentials that you need to login to the Conjur UI. You can access the Conjur UI by visiting the URL for accessing the Master service from outside the cluster and entering the provided credentials.
+
 # Test App
 
 Visit the [openshift-conjur-demo repo](https://github.com/conjurdemos/openshift-conjur-demo) for a test app that will allow you to test Conjur running in an OpenShift environment.
