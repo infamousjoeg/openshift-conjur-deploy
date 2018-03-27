@@ -49,6 +49,8 @@ export AUTHENTICATOR_SERVICE_ID=gke/prod
 
 Run the `./start` script to deploy Conjur. This creates a project with a highly-available Conjur cluster comprised of one Master, two Standbys, and two read-only Followers. The Master and Standbys sit behind an HAProxy load balancer that can be accessed through a Kubernetes service. The Followers sit behind their own Kubernetes service and function as the point of contact between Conjur and your OpenShift applications.
 
+Please note that these scripts currently overprivilege the `default` service account with the `anyuid` SCC to allow it to write files to disk. This privilege will become more restricted in future iterations of this project.
+
 # Test App
 
 Visit the [openshift-conjur-demo repo](https://github.com/conjurdemos/openshift-conjur-demo) for a test app that will allow you to test Conjur running in an OpenShift environment.
