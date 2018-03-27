@@ -1,9 +1,5 @@
 #!/bin/bash
 
-# Docker
-declare CONJUR_DEPLOY_TAG=conjur
-declare CONJUR_DOCKER_IMAGE=conjur-appliance:4.9-stable
-
 announce() {
   echo "++++++++++++++++++++++++++++++++++++++"
   echo ""
@@ -21,7 +17,7 @@ has_project() {
 }
 
 docker_tag_and_push() {
-  docker_tag="${DOCKER_REGISTRY_PATH}/$1/$2:$CONJUR_DEPLOY_TAG"
+  docker_tag="${DOCKER_REGISTRY_PATH}/$1/$2:$CONJUR_PROJECT_NAME"
   docker tag $2:local $docker_tag
   docker push $docker_tag
 }
@@ -43,7 +39,6 @@ copy_file_to_container() {
   oc exec "$pod_name" rm -- -rf "$container_temp_path/$parent_name"
 }
 
-# select first pod in list to be master
 get_master_pod_name() {
   pod_list=$(oc get pods -l app=conjur-node --no-headers | awk '{ print $1 }')
   echo $pod_list | awk '{print $1}'
@@ -107,10 +102,4 @@ function wait_for_it() {
     done
     echo 'Success!'
   fi
-}
-
-announce_openshift_version() {
-  MAJOR_VERSION=$(oc version | grep openshift | awk '{print $2}' | awk -F "." '{ print $1}')
-  MINOR_VERSION=$(oc version | grep openshift | awk -F "." '{ print $2}')
-  printf "Running Openshift %s.%s\n" $MAJOR_VERSION $MINOR_VERSION
 }

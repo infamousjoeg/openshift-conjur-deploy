@@ -1,4 +1,4 @@
-#!/bin/bash 
+#!/bin/bash
 set -eo pipefail
 
 # This script updates the HAProxy configuration for currently running Conjur containers
@@ -6,8 +6,8 @@ set -eo pipefail
 
 . ./utils.sh
 
-declare template_file="./etc/haproxy.cfg.template"
-declare destination_file="./etc/haproxy.cfg"
+declare template_file="./haproxy/haproxy.template.cfg"
+declare destination_file="./haproxy/haproxy.cfg"
 
 # takes one argument: the name of the HAProxy container to update
 main() {

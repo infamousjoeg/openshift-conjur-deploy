@@ -3,6 +3,8 @@ set -eou pipefail
 
 . utils.sh
 
+announce "Configuring master pod."
+
 set_project $CONJUR_PROJECT_NAME
 
 master_pod_name=$(get_master_pod_name)
@@ -17,3 +19,5 @@ oc exec $master_pod_name -- evoke configure master \
    --follower-altnames conjur-follower,conjur-follower.$CONJUR_PROJECT_NAME.svc.cluster.local \
    -p $CONJUR_ADMIN_PASSWORD \
    $CONJUR_ACCOUNT
+
+echo "Master pod configured."

@@ -34,7 +34,7 @@ if [ "$CONJUR_ADMIN_PASSWORD" = "" ]; then
 fi
 
 # Confirms Conjur image is present.
-if [[ "$(docker images -q $CONJUR_DOCKER_IMAGE 2> /dev/null)" == "" ]]; then
+if [[ "$(docker images -q conjur-appliance:4.9-stable 2> /dev/null)" == "" ]]; then
   echo "You must have the Conjur v4 Appliance tagged as $CONJUR_DOCKER_IMAGE in your Docker engine to run this script."
   exit 1
 fi

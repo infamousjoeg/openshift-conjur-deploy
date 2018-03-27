@@ -3,6 +3,8 @@ set -eou pipefail
 
 . utils.sh
 
+announce "Configuring followers."
+
 set_project $CONJUR_PROJECT_NAME
 
 master_pod_name=$(get_master_pod_name)

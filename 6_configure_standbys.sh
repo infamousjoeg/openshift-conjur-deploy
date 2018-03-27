@@ -3,6 +3,8 @@ set -eou pipefail
 
 . utils.sh
 
+announce "Configuring standbys."
+
 set_project $CONJUR_PROJECT_NAME
 
 master_pod_name=$(get_master_pod_name)
@@ -33,4 +35,4 @@ echo "Starting synchronous replication..."
 
 mastercmd evoke replication sync
 
-echo "Done."
+echo "Standbys configured."
