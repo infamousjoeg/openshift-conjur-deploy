@@ -3,11 +3,13 @@ set -eou pipefail
 
 . utils.sh
 
-announce "Creating Conjur cluster"
+announce "Creating Conjur cluster."
 
 set_project $CONJUR_PROJECT_NAME
 
-# Set credentials for OpenShift Docker registry.
+oc delete --ignore-not-found secrets dockerpullsecret
+
+# Set credentials for Docker registry.
 oc secrets new-dockercfg dockerpullsecret \
    --docker-server=${DOCKER_REGISTRY_PATH} --docker-username=_ \
    --docker-password=$(oc whoami -t) --docker-email=_

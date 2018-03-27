@@ -7,7 +7,7 @@ set -eou pipefail
 
 ./1_create_openshift_project.sh
 ./2_build_and_push_containers.sh
-./3_start_conjur_cluster.sh
+./3_deploy_conjur_cluster.sh
 ./4_configure_master.sh
 ./5_create_load_balancer.sh
 ./6_configure_standbys.sh

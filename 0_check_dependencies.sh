@@ -1,5 +1,5 @@
 #!/bin/bash
-set -eou pipefail
+set -eo pipefail
 
 . utils.sh
 
@@ -9,7 +9,7 @@ if ! oc whoami 2 > /dev/null; then
   exit 1
 fi
 
-# Confirm Conjur OpenShift project name is configured.
+# Confirm Conjur project name is configured.
 if [ "$CONJUR_PROJECT_NAME" = "" ]; then
   echo "You must set CONJUR_PROJECT_NAME before running this script."
   exit 1
@@ -33,8 +33,10 @@ if [ "$CONJUR_ADMIN_PASSWORD" = "" ]; then
   exit 1
 fi
 
+conjur_appliance_image=conjur-appliance:4.9-stable
+
 # Confirms Conjur image is present.
-if [[ "$(docker images -q conjur-appliance:4.9-stable 2> /dev/null)" == "" ]]; then
-  echo "You must have the Conjur v4 Appliance tagged as $CONJUR_DOCKER_IMAGE in your Docker engine to run this script."
+if [[ "$(docker images -q $conjur_appliance_image 2> /dev/null)" == "" ]]; then
+  echo "You must have the Conjur v4 Appliance tagged as $conjur_appliance_image in your Docker engine to run this script."
   exit 1
 fi

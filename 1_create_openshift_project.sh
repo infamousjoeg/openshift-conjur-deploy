@@ -3,7 +3,7 @@ set -eou pipefail
 
 . utils.sh
 
-announce "Creating Conjur OpenShift project."
+announce "Creating Conjur project."
 
 if has_project "$CONJUR_PROJECT_NAME"; then
   echo "Project '$CONJUR_PROJECT_NAME' exists, not going to create it."
