@@ -19,7 +19,7 @@ fi
 # TODO: replace this overprivileging with a service account + role + role binding
 oc adm policy add-scc-to-user anyuid -z default
 
-oc delete --ignore-not-found clusterrole conjur-authenticator-role
+oc delete --ignore-not-found clusterrole conjur-authenticator
 
 # Grant default service account permissions it needs for authn-k8s to:
 # 1) get + list pods (to verify pod names)
