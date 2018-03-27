@@ -19,6 +19,7 @@ spec:
       containers:
       - name: conjur-appliance
         image: {{ CONJUR_APPLIANCE_IMAGE }}
+        imagePullPolicy: Always
         ports:
         - containerPort: 443
           name: https
