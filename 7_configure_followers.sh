@@ -30,6 +30,6 @@ rm -rf tmp
 
 echo "Creating passthrough route."
 
-oc create route passthrough --service=conjur-follower --hostname=conjur-follower
+oc create route passthrough --service=conjur-master --hostname=conjur-master.apps.openshift33.itci.conjur.net
 
 echo "Followers configured."
