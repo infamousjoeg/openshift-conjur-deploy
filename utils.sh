@@ -8,6 +8,10 @@ announce() {
   echo "++++++++++++++++++++++++++++++++++++++"
 }
 
+get_env_domain() {
+  
+}
+
 has_project() {
   if oc projects | awk 'n>=1 { print a[n%1] } { a[n%1]=$0; n=n+1 }' | sed 's/^ *//g' | grep -x "$1" > /dev/null ; then
     true
