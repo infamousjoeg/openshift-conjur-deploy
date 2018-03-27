@@ -30,7 +30,11 @@ spec:
     spec:
       containers:
       - name: conjur-appliance
-        image: {{ DOCKER_IMAGE }}
+        image: {{ CONJUR_APPLIANCE_IMAGE }}
+        imagePullPolicy: Always
+        env:
+          - name: CONJUR_AUTHENTICATORS
+            value: authn-k8s/{{ AUTHENTICATOR_SERVICE_ID }}
         ports:
         - containerPort: 443
           name: https

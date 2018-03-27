@@ -1,4 +1,4 @@
 #!/bin/bash
-set -eo pipefail
+set -eou pipefail
 
-docker build -t haproxy:local .
+docker build -t haproxy:$CONJUR_PROJECT_NAME .

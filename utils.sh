@@ -1,7 +1,5 @@
 #!/bin/bash
 
-. config.sh
-
 announce() {
   echo "++++++++++++++++++++++++++++++++++++++"
   echo ""
@@ -10,31 +8,7 @@ announce() {
   echo "++++++++++++++++++++++++++++++++++++++"
 }
 
-check_login() {
-  if ! logged_in; then
-    echo "You must login to OpenShift before running this script."
-    exit
-  fi
-}
-
-check_docker_registry_path() {
-  if [ "$DOCKER_REGISTRY_PATH" = "" ]; then
-    echo "You must set DOCKER_REGISTRY_PATH before running this script."
-    exit
-  fi
-}
-
-logged_in() {
-  if oc whoami 2 > /dev/null; then
-    true
-  else
-    false
-  fi
-}
-
 has_project() {
-  oc project default
-  
   if oc projects | awk 'n>=1 { print a[n%1] } { a[n%1]=$0; n=n+1 }' | sed 's/^ *//g' | grep -x "$1" > /dev/null ; then
     true
   else
@@ -43,8 +17,8 @@ has_project() {
 }
 
 docker_tag_and_push() {
-  docker_tag="${DOCKER_REGISTRY_PATH}/${1}/$2:$CONJUR_DEPLOY_TAG"
-  docker tag $2:local $docker_tag
+  docker_tag="${DOCKER_REGISTRY_PATH}/$1/$2:$CONJUR_PROJECT_NAME"
+  docker tag $2:$CONJUR_PROJECT_NAME $docker_tag
   docker push $docker_tag
 }
 
@@ -65,15 +39,6 @@ copy_file_to_container() {
   oc exec "$pod_name" rm -- -rf "$container_temp_path/$parent_name"
 }
 
-load_policy() {
-  local POLICY_FILE=$1
-
-  run_conjur_cmd_as_admin <<CMD
-conjur policy load --as-group security_admin "policy/$POLICY_FILE"
-CMD
-}
-
-# select first pod in list to be master
 get_master_pod_name() {
   pod_list=$(oc get pods -l app=conjur-node --no-headers | awk '{ print $1 }')
   echo $pod_list | awk '{print $1}'
@@ -82,7 +47,7 @@ get_master_pod_name() {
 mastercmd() {
   local current_project=$(oc projects | grep \* | awk '{ print $2 }')
 
-  set_project $CONJUR_PROJECT
+  set_project $CONJUR_PROJECT_NAME
 
   local master_pod=$(oc get pod -l role=master --no-headers | awk '{ print $1 }')
   local interactive=$1
@@ -95,36 +60,6 @@ mastercmd() {
   fi
 
   set_project "$current_project"
-}
-
-rotate_host_api_key() {
-  local host=$1
-
-  run_conjur_cmd_as_admin <<CMD
-conjur host rotate_api_key -h $host
-CMD
-}
-
-run_conjur_cmd_as_admin() {
-   if [[ "$CONJURRC" = "" ]] ; then
-    echo "Set CONJURRC to point to your .conjurrc file."
-    echo "This is created by 'conjur init' in your home directory by default."
-    exit 1
-  fi
-
-  local command=$(cat $@)
-
-  if [[ -z "$command" ]] ; then
-    echo "Usage: %s <conjur-command>" $0
-    exit 1
-  fi
-  conjur authn logout > /dev/null
-  conjur authn login -u admin -p "$CONJUR_ADMIN_PASSWORD" > /dev/null
-
-  local output=$(eval "$command")
-
-  conjur authn logout > /dev/null
-  echo "$output"
 }
 
 set_project() {
@@ -168,11 +103,3 @@ function wait_for_it() {
     echo 'Success!'
   fi
 }
-
-announce_openshift_version() {
-  MAJOR_VERSION=$(oc version | grep openshift | awk '{print $2}' | awk -F "." '{ print $1}')
-  MINOR_VERSION=$(oc version | grep openshift | awk -F "." '{ print $2}')
-  printf "Running Openshift %s.%s\n" $MAJOR_VERSION $MINOR_VERSION
-}
-
-check_login
