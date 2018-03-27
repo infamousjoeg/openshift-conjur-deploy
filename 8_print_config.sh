@@ -10,8 +10,6 @@ external_port=$(oc describe svc conjur-master | awk '/NodePort:/ {print $2 " " $
 
 api_key=$(rotate_api_key)
 
-echo api_key
-
 announce "
 Conjur cluster is ready.
 
