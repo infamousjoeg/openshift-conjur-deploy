@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: ClusterRole
 metadata:
-  name: pod-get-list-exec-test
+  name: conjur-authenticator
 rules:
 - apiGroups: [""] # "" indicates the core API group
   resources: ["pods"]
