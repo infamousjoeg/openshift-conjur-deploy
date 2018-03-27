@@ -28,4 +28,8 @@ done
 
 rm -rf tmp
 
+echo "Creating passthrough route."
+
+oc create route passthrough --service=conjur-follower --hostname=conjur-follower
+
 echo "Followers configured."
