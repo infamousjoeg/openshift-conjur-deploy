@@ -103,3 +103,15 @@ function wait_for_it() {
     echo 'Success!'
   fi
 }
+
+rotate_api_key() {
+  set_project $CONJUR_PROJECT_NAME
+
+  master_pod_name=$(get_master_pod_name)
+    
+  oc exec $master_pod_name -- conjur authn login -u admin -p $CONJUR_ADMIN_PASSWORD > /dev/null
+  api_key=$(oc exec $master_pod_name -- conjur user rotate_api_key)
+  oc exec $master_pod_name -- conjur authn logout > /dev/null
+
+  echo $api_key
+}
