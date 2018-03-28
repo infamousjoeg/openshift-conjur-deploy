@@ -8,6 +8,16 @@ announce() {
   echo "++++++++++++++++++++++++++++++++++++++"
 }
 
+environment_url() {
+  oc status | head -1 | egrep -o 'https?://[^ ]+' | awk -F: '{print $1":"$2}'
+}
+
+environment_domain() {
+  env_url=$(environment_url)
+  protocol="$(echo $env_url | grep :// | sed -e's,^\(.*://\).*,\1,g')"
+  echo ${env_url/$protocol/}
+}
+
 has_project() {
   if oc projects | awk 'n>=1 { print a[n%1] } { a[n%1]=$0; n=n+1 }' | sed 's/^ *//g' | grep -x "$1" > /dev/null ; then
     true
