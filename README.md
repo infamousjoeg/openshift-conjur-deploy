@@ -70,14 +70,14 @@ id: conjur/authn-k8s/{{ SERVICE_ID }}
 
 The `SERVICE_ID` should describe the OpenShift node in which your Conjur cluster
 resides. For example, it might be something like `openshift/prod`. For Conjur
-configuration purposes, you will need to provide this SERVICE_ID value to the
-Conjur deploy scripts like so:
+configuration purposes, you will need to provide this value to the Conjur deploy
+scripts like so:
 
 ```
 export AUTHENTICATOR_SERVICE_ID=<service_id>
 ```
 
-This `service_id` can be any value you like, but it's important to make sure
+This `service_id` can be anything you like, but it's important to make sure
 that it matches the value that you intend to use in Conjur Policy.
 
 # Usage
@@ -86,7 +86,9 @@ Run `./start` to deploy Conjur. This will execute the numbered scripts in
 sequence to create and configure a Conjur cluster comprised of one Master, two
 Standbys, and two read-only Followers.
 
-Please note that these scripts currently overprivilege the `default` service account with the `anyuid` SCC to allow it to write files to disk. This privilege will become more restricted in future iterations of this project.
+Please note that the deploy scripts grant the `anyuid` SCC to the default
+service account in the project that contains Conjur as configuring standbys and
+followers requires root access.
 
 When the deploy scripts finish, they will print out the URL and credentials that
 you need to access Conjur from outside the OpenShift environment. You can access
