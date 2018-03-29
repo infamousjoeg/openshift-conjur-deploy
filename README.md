@@ -10,7 +10,7 @@ environment variables. The setup instructions below will walk you through the
 necessary steps for configuring your OpenShift environment and show you which
 variables need to be set before deploying.
 
-## OpenShift
+### OpenShift
 
 To deploy Conjur, you will first need access to an [OpenShift 3.3](https://docs.openshift.com/container-platform/3.3/welcome/index.html)
 deployment and must log in using the [OpenShift v1.3.3 CLI](https://github.com/openshift/origin/releases/tag/v1.3.3)
@@ -27,7 +27,7 @@ to deploy the Conjur cluster:
 export CONJUR_PROJECT_NAME=conjur
 ```
 
-## Docker
+### Docker
 
 You will need to [install Docker](https://www.docker.com/get-docker) on your
 local machine if you do not already have it. You will also need to make sure
@@ -40,16 +40,16 @@ Docker engine. You must then specify the path to the OpenShift registry like so:
 export DOCKER_REGISTRY_PATH=docker-registry-<registry-namespace>.<routing-domain>
 ```
 
-## Conjur
+### Conjur
 
-### Appliance Image
+#### Appliance Image
 
 You will need to obtain a Docker image of the Conjur v4 appliance and tag it in
 your local registry as `conjur-appliance:4.9-stable`. The deploy scripts will
 look for this tag when pushing the applance image to your OpenShift Docker
 registry.
 
-### Appliance Configuration
+#### Appliance Configuration
 
 When setting up a new Conjur installation, you must provide an account name and
 a password for the admin account:
