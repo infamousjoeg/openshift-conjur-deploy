@@ -1,58 +1,101 @@
 # openshift-conjur-deploy
 
-This repository contains scripts for deploying a Conjur v4 cluster to an OpenShift 3.3 environment.
+This repository contains scripts for deploying a Conjur v4 cluster to an
+OpenShift 3.3 environment.
 
-# Requirements
+# Setup
 
-- Obtain the latest Conjur v4 Appliance and tag it as `conjur-appliance:4.9-stable`.
-- Install the [OpenShift CLI v1.3.3](https://github.com/openshift/origin/releases/tag/v1.3.3).
-- Log in to your OpenShift environment via `oc login` with a user that has project creation privileges.
+The Conjur deployment scripts pick up configuration details from local
+environment variables. The setup instructions below will walk you through the
+necessary steps for configuring your OpenShift environment and show you which
+variables need to be set before deploying.
 
-# OpenShift Configuration
+## OpenShift
 
-We will need to set a few environment variables to configure the deploy scripts. First, the project in which you wish to run Conjur:
+To deploy Conjur, you will first need access to an [OpenShift 3.3](https://docs.openshift.com/container-platform/3.3/welcome/index.html)
+deployment and must log in using the [OpenShift v1.3.3 CLI](https://github.com/openshift/origin/releases/tag/v1.3.3)
+with a user that has sufficient privileges to create OpenShift projects:
+
+```
+oc login https://<your-routing-domain>:<port> -u <privileged-user>
+```
+
+Finally, you must specify a name for the OpenShift project in which you'd like
+to deploy the Conjur cluster:
 
 ```
 export CONJUR_PROJECT_NAME=conjur
 ```
 
-# Docker Configuration
+## Docker
 
-Make sure the [integrated Docker registry](https://docs.openshift.com/container-platform/3.3/install_config/registry/deploy_registry_existing_clusters.html) of your OpenShift environment is available and that you've added it as an [insecure registry](https://docs.docker.com/registry/insecure/) in your local Docker engine. Specify the path to the registry as:
+You will need to [install Docker](https://www.docker.com/get-docker) on your
+local machine if you do not already have it. You will also need to make sure
+that the [integrated Docker registry](https://docs.openshift.com/container-platform/3.3/install_config/registry/deploy_registry_existing_clusters.html)
+in your OpenShift environment is available and that you've added it as an
+[insecure registry](https://docs.docker.com/registry/insecure/) in your local
+Docker engine. You must then specify the path to the OpenShift registry like so:
 
 ```
-export DOCKER_REGISTRY_PATH=docker-registry-[registry pod namespace].apps.[openshift env domain]
+export DOCKER_REGISTRY_PATH=docker-registry-<registry-namespace>.<routing-domain>
 ```
 
-# Conjur Configuration
+## Conjur
 
-Specify the account and admin password that you would like to use for Conjur:
+### Appliance Image
+
+You will need to obtain a Docker image of the Conjur v4 appliance and tag it in
+your local registry as `conjur-appliance:4.9-stable`. The deploy scripts will
+look for this tag when pushing the applance image to your OpenShift Docker
+registry.
+
+### Appliance Configuration
+
+When setting up a new Conjur installation, you must provide an account name and
+a password for the admin account:
 
 ```
 export CONJUR_ACCOUNT=<my_account_name>
 export CONJUR_ADMIN_PASSWORD=<my_admin_password>
 ```
 
-In order to use Conjur's Kubernetes authenticator, you will have to create a Conjur policy named `conjur/authn-k8s/<service_id>`. This may be done before or after running these deploy scripts. Either way, you will need to specify the authenticator service ID as:
+Conjur uses [declarative policy](https://developer.conjur.net/policy) to control
+access to secrets. After deploying Conjur, you will need to load a policy that
+defines a `webservice` to represent the Kubernetes authenticator:
+
+```
+- !policy
+id: conjur/authn-k8s/{{ SERVICE_ID }}
+```
+
+The `SERVICE_ID` should describe the OpenShift node in which your Conjur cluster
+resides. For example, it might be something like `openshift/prod`. For Conjur
+configuration purposes, you will need to provide this SERVICE_ID value to the
+Conjur deploy scripts like so:
 
 ```
 export AUTHENTICATOR_SERVICE_ID=<service_id>
 ```
 
-For example, if your Conjur policy was called `conjur/authn-k8s/gke/prod` you would set:
+This `service_id` can be any value you like, but it's important to make sure
+that it matches the value that you intend to use in Conjur Policy.
 
-```
-export AUTHENTICATOR_SERVICE_ID=gke/prod
-```
+# Usage
 
-# Deploying Conjur
-
-Run the `./start` script to deploy Conjur. This creates a project with a highly-available Conjur cluster comprised of one Master, two Standbys, and two read-only Followers. The Master and Standbys sit behind an HAProxy load balancer that can be accessed through a Kubernetes service. The Followers sit behind their own Kubernetes service and function as the point of contact between Conjur and your OpenShift applications.
+Run `./start` to deploy Conjur. This will execute the numbered scripts in
+sequence to create and configure a Conjur cluster comprised of one Master, two
+Standbys, and two read-only Followers.
 
 Please note that these scripts currently overprivilege the `default` service account with the `anyuid` SCC to allow it to write files to disk. This privilege will become more restricted in future iterations of this project.
 
-When the deploy scripts finish, they will print out the URL and credentials that you need to login to the Conjur UI. You can access the Conjur UI by visiting the URL for accessing the Master service from outside the cluster and entering the provided credentials.
+When the deploy scripts finish, they will print out the URL and credentials that
+you need to access Conjur from outside the OpenShift environment. You can access
+the Conjur UI by visiting this URL in a browser or use it to interact with Conjur
+through the [Conjur CLI](https://developer.conjur.net/cli).
 
-# Test App
+# Test App Demo
 
-Visit the [openshift-conjur-demo repo](https://github.com/conjurdemos/openshift-conjur-demo) for a test app that will allow you to test Conjur running in an OpenShift environment.
+The [openshift-conjur-demo repo](https://github.com/conjurdemos/openshift-conjur-demo)
+can be used to set up a test application that retrieves secrets from Conjur
+using our Ruby API. It can be used as a reference when setting up your own
+applications to integrate with Conjur.
