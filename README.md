@@ -86,7 +86,7 @@ Run `./start` to deploy Conjur. This will execute the numbered scripts in
 sequence to create and configure a Conjur cluster comprised of one Master, two
 Standbys, and two read-only Followers.
 
-Please note that the deploy scripts grant the `anyuid` SCC to the default
+Please note that the deploy scripts grant the `anyuid` SCC to the `default`
 service account in the project that contains Conjur as configuring standbys and
 followers requires root access.
 
