@@ -20,3 +20,7 @@ echo "Configuring load balancer..."
 ./haproxy/update_haproxy.sh haproxy-conjur-master
 
 echo "Load balancer created and configured."
+
+oc create route passthrough --service=conjur-master
+
+echo "Created passthrough route for conjur-master service."
