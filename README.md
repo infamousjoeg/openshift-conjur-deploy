@@ -80,6 +80,15 @@ export AUTHENTICATOR_SERVICE_ID=<service_id>
 This `service_id` can be anything you like, but it's important to make sure
 that it matches the value that you intend to use in Conjur Policy.
 
+# Permissions
+
+The service account used by the Conjur authenticator must be granted the
+following permissions in the namespaces of the applications that wish to
+authenticate with Conjur:
+
+- `pods [get, list]` to verify the pod's membership in its namespace
+- `pods/exec [create, get]` to inject a signed certificate directly into the pod
+
 # Usage
 
 Run `./start` to deploy Conjur. This will execute the numbered scripts in
