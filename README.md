@@ -68,10 +68,10 @@ defines a `webservice` to represent the Kubernetes authenticator:
 id: conjur/authn-k8s/{{ SERVICE_ID }}
 ```
 
-The `SERVICE_ID` should describe the OpenShift node in which your Conjur cluster
-resides. For example, it might be something like `openshift/prod`. For Conjur
-configuration purposes, you will need to provide this value to the Conjur deploy
-scripts like so:
+The `SERVICE_ID` should describe the OpenShift cluster in which your Conjur
+deployment resides. For example, it might be something like `openshift/prod`.
+For Conjur configuration purposes, you will need to provide this value to the
+Conjur deploy scripts like so:
 
 ```
 export AUTHENTICATOR_SERVICE_ID=<service_id>
