@@ -86,7 +86,7 @@ The service account used by the Conjur authenticator must be granted the
 following permissions in the namespaces of the applications that wish to
 authenticate with Conjur:
 
-- `pods [get, list]` to verify the pod's membership in its namespace
+- `pods, serviceaccounts [get, list]` to verify the pod's membership in its namespace
 - `pods/exec [create, get]` to inject a signed certificate directly into the pod
 
 # Usage
