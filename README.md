@@ -104,6 +104,25 @@ you need to access Conjur from outside the OpenShift environment. You can access
 the Conjur UI by visiting this URL in a browser or use it to interact with Conjur
 through the [Conjur CLI](https://developer.conjur.net/cli).
 
+# Troubleshooting
+
+## Conjur pod fails to start
+
+In case the Conjur pod fails to start, with an error of `ImagePullBackOff`, run a `describe` command on the pod, like so:
+
+```
+oc describe pod conjur_pod_name
+```
+
+Under `Events`, look for an event with this text:
+
+```
+Warning     Failed          Failed to pull image "docker-registry-address/conjur_project_name/conjur-appliance:conjur_project_name": rpc error: code = 2 desc = Error: image conjur_project_name/conjur-appliance:conjur_project_name not found
+```
+
+If this error is present, it's possibly related to [issue #17523](https://github.com/openshift/origin/issues/17523) in the `oc` OpenShift CLI version you are using.
+Try using a newer version of the CLI such as v3.7.2, that contains a fix to this issue.
+
 # Test App Demo
 
 The [openshift-conjur-demo repo](https://github.com/conjurdemos/openshift-conjur-demo)
