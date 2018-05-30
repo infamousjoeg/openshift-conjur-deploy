@@ -3,6 +3,11 @@
 This repository contains scripts for deploying a Conjur v4 cluster to an
 OpenShift 3.3 environment.
 
+**Deprecation Notice**
+
+This project has been deprecated in favor of https://github.com/cyberark/kubernetes-conjur-deploy.
+Use that project for deploying Conjur to both Kubernetes and OpenShift.
+
 # Setup
 
 The Conjur deployment scripts pick up configuration details from local
