@@ -3,6 +3,11 @@
 This repository contains scripts for deploying a Conjur v4 cluster to an
 OpenShift 3.3 environment.
 
+**Deprecation Notice**
+
+This project has been deprecated in favor of https://github.com/cyberark/kubernetes-conjur-deploy.
+Use that project for deploying Conjur to both Kubernetes and OpenShift.
+
 # Setup
 
 The Conjur deployment scripts pick up configuration details from local
@@ -68,10 +73,10 @@ defines a `webservice` to represent the Kubernetes authenticator:
 id: conjur/authn-k8s/{{ SERVICE_ID }}
 ```
 
-The `SERVICE_ID` should describe the OpenShift node in which your Conjur cluster
-resides. For example, it might be something like `openshift/prod`. For Conjur
-configuration purposes, you will need to provide this value to the Conjur deploy
-scripts like so:
+The `SERVICE_ID` should describe the OpenShift cluster in which your Conjur
+deployment resides. For example, it might be something like `openshift/prod`.
+For Conjur configuration purposes, you will need to provide this value to the
+Conjur deploy scripts like so:
 
 ```
 export AUTHENTICATOR_SERVICE_ID=<service_id>
@@ -79,6 +84,15 @@ export AUTHENTICATOR_SERVICE_ID=<service_id>
 
 This `service_id` can be anything you like, but it's important to make sure
 that it matches the value that you intend to use in Conjur Policy.
+
+# Permissions
+
+The service account used by the Conjur authenticator must be granted the
+following permissions in the namespaces of the applications that wish to
+authenticate with Conjur:
+
+- `pods, serviceaccounts [get, list]` to verify the pod's membership in its namespace
+- `pods/exec [create, get]` to inject a signed certificate directly into the pod
 
 # Usage
 
@@ -94,6 +108,25 @@ When the deploy scripts finish, they will print out the URL and credentials that
 you need to access Conjur from outside the OpenShift environment. You can access
 the Conjur UI by visiting this URL in a browser or use it to interact with Conjur
 through the [Conjur CLI](https://developer.conjur.net/cli).
+
+# Troubleshooting
+
+## Conjur pod fails to start
+
+In case the Conjur pod fails to start, with an error of `ImagePullBackOff`, run a `describe` command on the pod, like so:
+
+```
+oc describe pod conjur_pod_name
+```
+
+Under `Events`, look for an event with this text:
+
+```
+Warning     Failed          Failed to pull image "docker-registry-address/conjur_project_name/conjur-appliance:conjur_project_name": rpc error: code = 2 desc = Error: image conjur_project_name/conjur-appliance:conjur_project_name not found
+```
+
+If this error is present, it's possibly related to [issue #17523](https://github.com/openshift/origin/issues/17523) in the `oc` OpenShift CLI version you are using.
+Try using a newer version of the CLI such as v3.7.2, that contains a fix to this issue.
 
 # Test App Demo
 
