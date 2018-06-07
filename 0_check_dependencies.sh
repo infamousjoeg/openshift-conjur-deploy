@@ -3,6 +3,8 @@ set -eo pipefail
 
 . utils.sh
 
+source bootstrap.env
+
 # Confirm logged into OpenShift.
 if ! oc whoami 2 > /dev/null; then
   echo "You must login to OpenShift before running this demo."

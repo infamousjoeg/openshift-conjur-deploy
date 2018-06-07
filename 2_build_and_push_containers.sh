@@ -5,7 +5,7 @@ set -eou pipefail
 
 announce "Building and pushing conjur-appliance image."
 
-docker login -u _ -p $(oc whoami -t) $DOCKER_REGISTRY_PATH
+docker login -u admin -p $(oc whoami -t) $DOCKER_REGISTRY_PATH
 
 pushd build/conjur_server
   ./build.sh

@@ -1,6 +1,8 @@
 #!/bin/bash
 set -eou pipefail
 
+source bootstrap.env
+
 ./0_check_dependencies.sh
 
 ./stop
