@@ -5,7 +5,7 @@ metadata:
   name: conjur-authenticator
 rules:
 - apiGroups: [""] # "" indicates the core API group
-  resources: ["pods", "serviceaccounts"]
+  resources: ["pods"]
   verbs: ["get", "list"]
 - apiGroups: [""]
   resources: ["pods/exec"]

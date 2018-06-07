@@ -24,9 +24,3 @@ echo "Load balancer created and configured."
 oc create route passthrough --service=conjur-master
 
 echo "Created passthrough route for conjur-master service."
-
-conjur_master_route=$(oc get routes | grep conjur-master | awk '{ print $2 }')
-
-oc exec $(get_master_pod_name) -- evoke ca regenerate $conjur_master_route
-
-echo "Added conjur-master service route to Master cert altnames."
