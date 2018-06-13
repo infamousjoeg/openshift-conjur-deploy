@@ -1,14 +1,5 @@
 #!/bin/bash
 
-check_env_var() {
-  var_name=$1
-
-  if [ "${!var_name}" = "" ]; then
-    echo "You must set $1 before running these scripts."
-    exit 1
-  fi
-}
-
 announce() {
   echo "++++++++++++++++++++++++++++++++++++++"
   echo ""
@@ -93,7 +84,7 @@ set_project() {
 }
 
 wait_for_node() {
-  wait_for_it -1 "kubectl describe pod $1 | grep Status: | grep -q Running"
+  wait_for_it -1 "oc describe pod $1 | grep Status: | grep -q Running"
 }
 
 function wait_for_it() {

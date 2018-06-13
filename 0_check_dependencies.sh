@@ -3,19 +3,35 @@ set -eo pipefail
 
 . utils.sh
 
-source bootstrap.env
-
 # Confirm logged into OpenShift.
 if ! oc whoami 2 > /dev/null; then
   echo "You must login to OpenShift before running this demo."
   exit 1
 fi
 
-check_env_var "CONJUR_PROJECT_NAME"
-check_env_var "DOCKER_REGISTRY_PATH"
-check_env_var "CONJUR_ACCOUNT"
-check_env_var "CONJUR_ADMIN_PASSWORD"
-check_env_var "AUTHENTICATOR_SERVICE_ID"
+# Confirm Conjur project name is configured.
+if [ "$CONJUR_PROJECT_NAME" = "" ]; then
+  echo "You must set CONJUR_PROJECT_NAME before running this script."
+  exit 1
+fi
+
+# Confirm docker registry is configured.
+if [ "$DOCKER_REGISTRY_PATH" = "" ]; then
+  echo "You must set DOCKER_REGISTRY_PATH before running this script."
+  exit 1
+fi
+
+# Confirm Conjur account is configured.
+if [ "$CONJUR_ACCOUNT" = "" ]; then
+  echo "You must set CONJUR_ACCOUNT before running this script."
+  exit 1
+fi
+
+# Confirm Conjur admin password is configured.
+if [ "$CONJUR_ADMIN_PASSWORD" = "" ]; then
+  echo "You must set CONJUR_ADMIN_PASSWORD before running this script."
+  exit 1
+fi
 
 conjur_appliance_image=conjur-appliance:4.9-stable
 
